@@ -1,0 +1,87 @@
+name: Daily Fee Collection
+
+on:
+  schedule:
+    # Runs every day at 9:00 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  collect-fees:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Create logs directory
+      run: mkdir -p logs
+      
+    - name: Run Fee Collection
+      env:
+        # Environment variables from GitHub Secrets
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        RPC_URL: ${{ secrets.RPC_URL }}
+        CONTRACT_ADDRESS: ${{ secrets.CONTRACT_ADDRESS }}
+        NFT_POSITION_MANAGER: ${{ secrets.NFT_POSITION_MANAGER }}
+        WETH_ADDRESS: ${{ secrets.WETH_ADDRESS }}
+        
+        # Gas configuration
+        GAS_LIMIT: ${{ secrets.GAS_LIMIT || '8000000' }}
+        GAS_PRICE_MULTIPLIER: ${{ secrets.GAS_PRICE_MULTIPLIER || '1.1' }}
+        MIN_GAS_PRICE: ${{ secrets.MIN_GAS_PRICE || '20000000' }}
+        MAX_GAS_PRICE: ${{ secrets.MAX_GAS_PRICE || '40000000' }}
+        
+        # Batch configuration
+        BATCH_SIZE: ${{ secrets.BATCH_SIZE || '90' }}
+        MIN_BATCH_SIZE: ${{ secrets.MIN_BATCH_SIZE || '10' }}
+        START_INDEX: ${{ secrets.START_INDEX || '0' }}
+        END_INDEX: ${{ secrets.END_INDEX || '0' }}
+        
+        # Processing mode (fast mode enabled)
+        SKIP_VOLUME_FILTERING: ${{ secrets.SKIP_VOLUME_FILTERING || 'true' }}
+        
+        # Optional Moralis API
+        USE_MORALIS: ${{ secrets.USE_MORALIS || 'false' }}
+        MORALIS_API_KEY: ${{ secrets.MORALIS_API_KEY }}
+        
+        # Volume filtering (only used if SKIP_VOLUME_FILTERING=false)
+        MIN_VOLUME_USD: ${{ secrets.MIN_VOLUME_USD || '10' }}
+        CHAIN_ID: ${{ secrets.CHAIN_ID || 'base' }}
+        
+        # Rate limiting
+        DEXSCREENER_DELAY: ${{ secrets.DEXSCREENER_DELAY || '3000' }}
+        DEXSCREENER_MAX_RETRIES: ${{ secrets.DEXSCREENER_MAX_RETRIES || '3' }}
+        DEXSCREENER_RETRY_DELAY: ${{ secrets.DEXSCREENER_RETRY_DELAY || '10000' }}
+        RPC_DELAY: ${{ secrets.RPC_DELAY || '1000' }}
+        RPC_MAX_RETRIES: ${{ secrets.RPC_MAX_RETRIES || '5' }}
+        RPC_RETRY_DELAY: ${{ secrets.RPC_RETRY_DELAY || '5000' }}
+        
+      run: |
+        echo "$(date): Starting Gas Optimized Batch Collector..."
+        timeout 1800 npm start || echo "Process completed or timed out after 30 minutes"
+        echo "$(date): Fee collection workflow completed"
+        
+    - name: Upload logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: fee-collection-logs-${{ github.run_number }}
+        path: logs/
+        retention-days: 30
+        
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ Fee collection failed!"
+        echo "Check the workflow logs for details."
+        echo "Run number: ${{ github.run_number }}" 
