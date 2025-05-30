@@ -1,0 +1,108 @@
+[
+  {
+    "inputs": [],
+    "name": "getAllPositions",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "positions",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint64",
+        "name": "unlockTime",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint16",
+        "name": "lpFeesCut",
+        "type": "uint16"
+      },
+      {
+        "internalType": "bool",
+        "name": "initialized",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "startIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "name": "protocolCollectFeesBatch",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "processedCount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalAmount0",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalAmount1",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalAmount0",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalAmount1",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProtocolBatchFeesCollected",
+    "type": "event"
+  }
+] 

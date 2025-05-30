@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  batch-fees-collector:
+    build: .
+    container_name: batch-fees-collector
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/usr/src/app/logs
+    environment:
+      - NODE_ENV=production
+    command: node BatchFeesCollector.js 

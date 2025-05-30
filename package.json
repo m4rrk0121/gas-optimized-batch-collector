@@ -1,0 +1,21 @@
+{
+  "name": "batch-fees-collector",
+  "version": "1.0.0",
+  "description": "Script to collect fees in batches from MultiPositionLiquidityLocker contract on Base chain with volume filtering",
+  "main": "GasOptimizedBatchCollector.js",
+  "scripts": {
+    "start": "node GasOptimizedBatchCollector.js",
+    "deploy": "pm2 start GasOptimizedBatchCollector.js --name batch-fees-collector",
+    "stop": "pm2 stop batch-fees-collector",
+    "logs": "pm2 logs batch-fees-collector"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "dotenv": "^16.3.1",
+    "pm2": "^5.3.0",
+    "web3": "^1.10.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
